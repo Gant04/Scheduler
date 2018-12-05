@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="major">
+        <item>College of Agricultural, Consumer, and Environmental Sciences (ACES)</item>
+        <item>College of Applied Health Sciences (AHS)</item>
+        <item>College of Education (EDU)</item>
+        <item>College of Engineering (ENG)</item>
+        <item>College of Fine and Applied Arts (FAA)</item>
+        <item>College of Liberal Arts and Sciences (LAS)</item>
+        <item>College of Media (COM)</item>
+        <item>Division of General Studies (DGS)</item>
+        <item>Gies College of Business (BUS)</item>
+        <item>School of Social Work (SSW)</item>
+
+
+    </string-array>
+</resources>
