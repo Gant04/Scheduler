@@ -61,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
                 if(userID.equals("")) {
-                    AlertDialog.Builder builder = new AlertDialog().Builder(RegisterActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     dialog = builder.setMessage("ID cannot be empty.")
                             .setPositiveButton("OK", null)
                             .create();
@@ -130,8 +130,50 @@ public class RegisterActivity extends AppCompatActivity {
                             .create();
                     dialog.show();
                     return;
+                }
+
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("Success");
+                            if(success) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                dialog = builder.setMessage("Sign up success.")
+                                        .setPositiveButton("OK", null)
+                                        .create();
+                                dialog.show();
+                                finish();
+
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                dialog = builder.setMessage("Sign up failed.")
+                                        .setNegativeButton("OK", null)
+                                        .create();
+                                dialog.show();
+                            }
+                        }
+
+                        catch(Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                };
+                RegisterRequest registerRequest = new RegisterRequest(userID, userPassword, userGender, userMajor, userEmail, responseListener);
+
+                RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
+                queue.add(registerRequest);
             }
-        }
         });
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
     }
 }
