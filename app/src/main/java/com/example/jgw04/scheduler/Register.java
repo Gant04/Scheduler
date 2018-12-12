@@ -23,6 +23,13 @@ public class Register extends AppCompatActivity {
         e3 = (EditText) findViewById(R.id.emailText);
         b1 = (Button) findViewById(R.id.loginButton);
         b2 = (Button) findViewById(R.id.registerButton);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent (Register.this, Login.class);
+                startActivity(i);
+            }
+        });
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
