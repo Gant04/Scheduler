@@ -3,6 +3,8 @@
     package="com.example.jgw04.scheduler">
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,9 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".RingtonePlayingService"
-            android:enabled="true"></service>
+        <activity android:name=".Login"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <receiver android:name="AlarmReceiver"></receiver>
+        <service android:name=".RingtonePlayingService"
+            android:enabled="true">
+        </service>
     </application>
 
 </manifest>

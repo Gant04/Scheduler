@@ -1,5 +1,5 @@
 package com.example.jgw04.scheduler;
-
+import java.util.Date;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,82 +11,54 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
-import static com.example.jgw04.scheduler.R.id.notification_background;
-import static com.example.jgw04.scheduler.R.id.setButton;
-
 public class MainActivity extends AppCompatActivity{
 
-    AlarmManager alarm_manager;
-    TimePicker alarm_timepicker;
-    Context context;
-    PendingIntent pendingIntent;
-
+    TimePicker timepicker;
+    TextView textView;
+    int mHour, mMin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
+        timepicker = (TimePicker)findViewById(R.id.timePicker);
+        textView = (TextView)findViewById(R.id.alarmtext);
 
-        this.context = this;
-
-        // 알람매니저 설정
-        alarm_manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        // 타임피커 설정
-        alarm_timepicker = findViewById(R.id.timePicker);
-
-        // Calendar 객체 생성
-        final Calendar calendar = Calendar.getInstance();
-
-        // 알람리시버 intent 생성
-        final Intent my_intent = new Intent(this.context, AlarmReceiver.class);
-
-        // 알람 시작 버튼
-        Button setAlarm = findViewById(R.id.setButton);
-        setAlarm.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
+        timepicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
-            public void onClick(View v) {
-
-                // calendar에 시간 셋팅
-                calendar.set(Calendar.HOUR_OF_DAY, alarm_timepicker.getHour());
-                calendar.set(Calendar.MINUTE, alarm_timepicker.getMinute());
-
-                // 시간 가져옴
-                int hour = alarm_timepicker.getHour();
-                int minute = alarm_timepicker.getMinute();
-                Toast.makeText(MainActivity.this,"Alarm on " + hour + " : " + minute,Toast.LENGTH_SHORT).show();
-
-                // reveiver에 string 값 넘겨주기
-                my_intent.putExtra("state","alarm on");
-
-                pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, my_intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-
-                // 알람셋팅
-                alarm_manager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                        pendingIntent);
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                mHour = hourOfDay;
+                mMin = minute;
+                textView.setText(textView.getText().toString()+" " + mHour + " : " +mMin);
             }
         });
+    }
+    public void setTimer(View v){
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Date date = new Date();
 
-        // 알람 정지 버튼
-        Button alarm_off = findViewById(R.id.cancelButton);
-        alarm_off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Alarm ended",Toast.LENGTH_SHORT).show();
-                // 알람매니저 취소
-                alarm_manager.cancel(pendingIntent);
+        Calendar cal_alarm = Calendar.getInstance();
+        Calendar cal_now = Calendar.getInstance();
 
-                my_intent.putExtra("state","alarm off");
+        cal_now.setTime(date);
+        cal_alarm.setTime(date);
 
-                // 알람취소
-                sendBroadcast(my_intent);
-            }
-        });
+        cal_alarm.set(Calendar.HOUR_OF_DAY, mHour);
+        cal_alarm.set(Calendar.MINUTE, mMin);
+        cal_alarm.set(Calendar.SECOND, 0);
+
+        if (cal_alarm.before(cal_now)) {
+            cal_alarm.add(Calendar.DATE, 1);
+        }
+
+        Intent i = new Intent(MainActivity.this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,24444, i, 0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,cal_alarm.getTimeInMillis(), pendingIntent);
+
     }
 }

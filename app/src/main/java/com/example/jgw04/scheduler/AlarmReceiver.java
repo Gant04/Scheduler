@@ -6,34 +6,36 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
-class AlarmReceiver extends BroadcastReceiver {
+import java.net.URI;
+
+public class AlarmReceiver extends BroadcastReceiver {
 
     //get ID & msg from intent
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onReceive(Context context, Intent intent) {
-        int notificationId = intent.getIntExtra("notificationId", 0);
-        String msg = intent.getStringExtra("todo");
+        Notification noti = new Notification.Builder(context)
+                .setContentTitle("Alarm is On")
+                .setContentText("Time to take medication")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .build();
 
-        //when notification is tapped, call MainActivity
+        NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        noti.flags|= Notification.FLAG_AUTO_CANCEL;
+        manager.notify(0,noti);
 
-        Intent mainIntent = new Intent(context, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
-
-        //prepare notification
-        NotificationManager myNotiManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification.Builder builder = new Notification.Builder(context);
-        builder.setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("It's time!")
-                .setContentText("Don't forget taking medication")
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
-                .setContentIntent(contentIntent);
-
-        //Notify
-        myNotiManager.notify(notificationId, builder.build());
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        Ringtone r = RingtoneManager.getRingtone(context, notification);
+        ((Ringtone) r).play();
     }
+
 }
