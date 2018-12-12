@@ -18,6 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity"></activity>
+        <service
+            android:name=".RingtonePlayingService"
+            android:enabled="true"></service>
     </application>
 
 </manifest>
