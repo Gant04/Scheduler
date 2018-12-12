@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ValidateRequest extends StringRequest {
-    final static private String URL = "http://gant04.com/UserRegister.php";
+    final static private String URL = "http://gant04.com/UserValidate.php";
     private Map<String, String> parameters;
 
     public ValidateRequest(String userID, Response.Listener<String> listener) {
